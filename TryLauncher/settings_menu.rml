@@ -1,0 +1,40 @@
+<rml>
+	<head>
+		<title>Settings</title>
+		<link type="text/rcss" href="ui.rcss" />
+	</head>
+	<body class="bg">
+		<div class="hero">
+			<div class="brand">
+				<div class="title">SETTINGS</div>
+				<div class="subtitle">display mode & resolution</div>
+			</div>
+
+			<div class="panel">
+				<div class="row">
+					<div class="label">Display mode</div>
+					<select id="display_mode" class="select">
+						<option value="windowed">Windowed</option>
+						<option value="borderless">Borderless</option>
+						<option value="fullscreen">Fullscreen</option>
+					</select>
+				</div>
+
+				<div class="row">
+					<div class="label">Resolution</div>
+					<select id="resolution" class="select">
+						<option value="1280x720">1280x720</option>
+						<option value="1600x900">1600x900</option>
+						<option value="1920x1080">1920x1080</option>
+						<option value="2560x1440">2560x1440</option>
+					</select>
+				</div>
+
+				<div class="panel_2">
+					<button class="btn btn_green" onclick="apply_settings">Apply</button>
+					<button class="btn" onclick="back">Back</button>
+				</div>
+			</div>
+		</div>
+	</body>
+</rml>

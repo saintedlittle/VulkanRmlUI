@@ -1,0 +1,20 @@
+<rml>
+	<head>
+		<title>Main</title>
+		<link type="text/rcss" href="ui.rcss" />
+	</head>
+	<body class="bg">
+		<div class="hero">
+			<div class="brand">
+				<div class="title">TRY LAUNCHER</div>
+				<div class="subtitle">style: Mafia II (calm, cinematic)</div>
+			</div>
+
+			<div class="panel">
+				<button class="btn" onclick="settings">Settings</button>
+				<button class="btn btn_red" onclick="toast_demo">Show toast</button>
+				<button class="btn" onclick="exit">Exit</button>
+			</div>
+		</div>
+	</body>
+</rml>
