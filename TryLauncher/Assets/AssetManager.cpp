@@ -27,10 +27,27 @@ bool AssetManager::Initialize() {
     // Get current working directory for debugging
     std::cout << "Current working directory: " << std::filesystem::current_path() << std::endl;
     
-    // Verify asset base path exists
-    if (!std::filesystem::exists(m_assetBasePath)) {
-        std::cout << "Asset base path does not exist: " << std::filesystem::absolute(m_assetBasePath) << std::endl;
-        std::cout << "Creating asset base path..." << std::endl;
+    // Try to find the correct assets directory
+    std::vector<std::string> possiblePaths = {
+        "assets/",                    // Current directory
+        "../x64/Release/assets/",     // From TryLauncher directory to Release
+        "../../x64/Release/assets/",  // From deeper nested directory
+        "x64/Release/assets/"         // From project root
+    };
+    
+    bool foundAssets = false;
+    for (const auto& path : possiblePaths) {
+        if (std::filesystem::exists(path + "fonts/Roboto-Regular.ttf")) {
+            m_assetBasePath = path;
+            foundAssets = true;
+            std::cout << "Found assets at: " << std::filesystem::absolute(m_assetBasePath) << std::endl;
+            break;
+        }
+    }
+    
+    if (!foundAssets) {
+        std::cerr << "Could not find assets directory with required font file!" << std::endl;
+        // Create assets directory as fallback
         std::filesystem::create_directories(m_assetBasePath);
     }
     
