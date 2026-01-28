@@ -57,6 +57,11 @@ void EventSystem::Shutdown() {
     std::cout << "EventSystem shutdown complete" << std::endl;
 }
 
+void EventSystem::PublishEvent(std::unique_ptr<Event> event) {
+    std::lock_guard<std::mutex> lock(m_queueMutex);
+    m_eventQueue.push(std::move(event));
+}
+
 void EventSystem::ProcessEvents() {
     std::queue<std::unique_ptr<Event>> eventsToProcess;
     

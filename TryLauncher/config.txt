@@ -1,0 +1,19 @@
+# TryLauncher Configuration File
+# Graphics Settings
+graphics.windowWidth=1920
+graphics.windowHeight=1080
+graphics.fullscreen=false
+graphics.vsync=true
+graphics.msaaSamples=1
+graphics.enableValidation=false
+graphics.preferredGPU=auto
+# Audio Settings
+audio.masterVolume=1
+audio.musicVolume=0.8
+audio.sfxVolume=1
+audio.audioDevice=default
+# Input Settings
+input.mouseSensitivity=1
+# General Settings
+assetPath=assets/
+configPath=config.json

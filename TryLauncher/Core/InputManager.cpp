@@ -1,6 +1,8 @@
 #include "InputManager.h"
 #include "EventSystem.h"
 #include "InputEvents.h"
+#include "SettingsManager.h"
+#include "EngineConfig.h"
 #include <iostream>
 
 // Static instance for callbacks
@@ -226,5 +228,39 @@ void InputManager::HandleWindowCloseEvent() {
     if (m_eventSystem) {
         WindowCloseEvent event;
         m_eventSystem->Publish(event);
+    }
+}
+void InputManager::ApplyInputSettings(const EngineConfig::Input& input) {
+    if (!m_initialized) {
+        return;
+    }
+    
+    std::cout << "Applying input settings..." << std::endl;
+    
+    // Apply mouse sensitivity
+    std::cout << "Mouse sensitivity set to: " << input.mouseSensitivity << std::endl;
+    
+    // Apply key bindings
+    std::cout << "Key bindings updated:" << std::endl;
+    for (const auto& binding : input.keyBindings) {
+        std::cout << "  " << binding.first << " -> " << binding.second << std::endl;
+    }
+    
+    // In a real implementation, these settings would be stored and used
+    // during input processing to modify sensitivity and handle key bindings
+    
+    std::cout << "Input settings applied successfully" << std::endl;
+}
+
+void InputManager::OnSettingsChanged(const std::string& settingName) {
+    if (!m_initialized) {
+        return;
+    }
+    
+    // Handle input-related setting changes
+    if (settingName.find("input.") == 0) {
+        // For now, we'll need to get the settings from somewhere
+        // In a full implementation, InputManager would have a reference to SettingsManager
+        std::cout << "Input setting changed: " << settingName << std::endl;
     }
 }

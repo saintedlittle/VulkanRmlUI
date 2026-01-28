@@ -1,4 +1,6 @@
 ﻿#include "Engine/Engine.h"
+#include "Core/SettingsManager.h"
+#include "Core/EngineConfig.h"
 #include <iostream>
 
 int main() {
@@ -6,7 +8,7 @@ int main() {
     
     // Create engine with default configuration
     Engine engine;
-    EngineConfig config; // Uses default values
+    EngineConfig config = SettingsManager::GetDefaultConfig();
     
     // Initialize the engine
     if (!engine.Initialize(config)) {

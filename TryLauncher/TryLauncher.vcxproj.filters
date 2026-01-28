@@ -28,6 +28,9 @@
     <Filter Include="Assets">
       <UniqueIdentifier>{8BC9CEBC-8B4A-11D0-8D11-00A0C91BC942}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Audio">
+      <UniqueIdentifier>{8BC9CEBE-8B4A-11D0-8D11-00A0C91BC942}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Tests">
       <UniqueIdentifier>{8BC9CEBD-8B4A-11D0-8D11-00A0C91BC942}</UniqueIdentifier>
     </Filter>
@@ -97,6 +100,9 @@
     <ClCompile Include="Assets\Texture.cpp">
       <Filter>Assets</Filter>
     </ClCompile>
+    <ClCompile Include="Audio\AudioManager.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
     <ClCompile Include="Core\SettingsManager.cpp">
       <Filter>Core</Filter>
     </ClCompile>
@@ -141,6 +147,9 @@
     <ClInclude Include="Core\InputEvents.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\EngineConfig.h">
+      <Filter>Core</Filter>
+    </ClInclude>
     <ClInclude Include="Core\SceneManager.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -152,6 +161,9 @@
     </ClInclude>
     <ClInclude Include="Assets\Texture.h">
       <Filter>Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio\AudioManager.h">
+      <Filter>Audio</Filter>
     </ClInclude>
     <ClInclude Include="Core\SettingsManager.h">
       <Filter>Core</Filter>

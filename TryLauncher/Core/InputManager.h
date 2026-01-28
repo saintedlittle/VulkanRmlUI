@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Engine/Engine.h"
+#include "../Core/EngineConfig.h"
 #include <GLFW/glfw3.h>
 
 class EventSystem;
@@ -31,6 +32,10 @@ public:
     bool IsKeyPressed(int key) const;
     bool IsMouseButtonPressed(int button) const;
     void GetMousePosition(double& x, double& y) const;
+    
+    // Settings application
+    void ApplyInputSettings(const EngineConfig::Input& input);
+    void OnSettingsChanged(const std::string& settingName);
 
 private:
     // GLFW callback functions

@@ -3,6 +3,7 @@
 #include "VulkanSwapchain.h"
 #include "VulkanCommandBuffer.h"
 #include "../Core/SettingsManager.h"
+#include "../Core/EngineConfig.h"
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <stdexcept>
@@ -276,4 +277,76 @@ bool VulkanRenderer::CreateSwapchain() {
     }
     
     return true;
+}
+
+void VulkanRenderer::ApplyGraphicsSettings(const EngineConfig::Graphics& graphics) {
+    if (!m_initialized) {
+        return;
+    }
+    
+    std::cout << "Applying graphics settings..." << std::endl;
+    
+    // Wait for device to be idle before making changes
+    WaitIdle();
+    
+    // Apply window size changes
+    if (m_window) {
+        int currentWidth, currentHeight;
+        glfwGetWindowSize(m_window, &currentWidth, &currentHeight);
+        
+        if (static_cast<uint32_t>(currentWidth) != graphics.windowWidth || 
+            static_cast<uint32_t>(currentHeight) != graphics.windowHeight) {
+            glfwSetWindowSize(m_window, graphics.windowWidth, graphics.windowHeight);
+            OnWindowResize();
+        }
+        
+        // Apply fullscreen mode
+        GLFWmonitor* currentMonitor = glfwGetWindowMonitor(m_window);
+        bool isCurrentlyFullscreen = (currentMonitor != nullptr);
+        
+        if (graphics.fullscreen != isCurrentlyFullscreen) {
+            if (graphics.fullscreen) {
+                // Switch to fullscreen
+                GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+                const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+                glfwSetWindowMonitor(m_window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+            } else {
+                // Switch to windowed mode
+                glfwSetWindowMonitor(m_window, nullptr, 100, 100, graphics.windowWidth, graphics.windowHeight, 0);
+            }
+            OnWindowResize();
+        }
+    }
+    
+    // Apply VSync setting
+    if (m_swapchain) {
+        // VSync changes require swapchain recreation
+        // This will be handled during the next frame when swapchain is recreated
+        m_framebufferResized = true;
+    }
+    
+    // Note: MSAA and validation settings require more complex changes
+    // and would typically require full renderer reinitialization
+    // For now, we'll log that these settings require restart
+    if (graphics.msaaSamples != 1) {
+        std::cout << "MSAA setting will take effect on next application restart" << std::endl;
+    }
+    
+    if (graphics.enableValidation) {
+        std::cout << "Validation layers setting will take effect on next application restart" << std::endl;
+    }
+    
+    std::cout << "Graphics settings applied successfully" << std::endl;
+}
+
+void VulkanRenderer::OnSettingsChanged(const std::string& settingName) {
+    if (!m_initialized || !m_settingsManager) {
+        return;
+    }
+    
+    // Handle graphics-related setting changes
+    if (settingName.find("graphics.") == 0) {
+        const auto& config = m_settingsManager->GetConfig();
+        ApplyGraphicsSettings(config.graphics);
+    }
 }

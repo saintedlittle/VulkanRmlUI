@@ -105,7 +105,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>F:\GLFW\include;F:\GLM;F:\Vulkan\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>F:\GLFW\include;F:\GLM;F:\Vulkan\Include;F:\nlohmann;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -123,7 +123,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>F:\VulkanMemoryAllocator\include;F:\GLFW\include;F:\GLM;F:\Vulkan\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>F:\VulkanMemoryAllocator\include;F:\GLFW\include;F:\GLM;F:\Vulkan\Include;F:\nlohmann;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -151,14 +151,14 @@
     <ClCompile Include="UI\RmlUISystem.cpp" />
     <ClCompile Include="UI\VulkanRmlRenderer.cpp" />
     <ClCompile Include="UI\UIDocument.cpp" />
-	<ClCompile Include="Core\EventSystem.cpp" />
+    <ClCompile Include="Core\EventSystem.cpp" />
     <ClCompile Include="Core\InputManager.cpp" />
     <ClCompile Include="Core\SceneManager.cpp" />
     <ClCompile Include="Core\NavigationManager.cpp" />
     <ClCompile Include="Assets\AssetManager.cpp" />
     <ClCompile Include="Assets\Texture.cpp" />
+    <ClCompile Include="Audio\AudioManager.cpp" />
     <ClCompile Include="Core\SettingsManager.cpp" />
-    <ClCompile Include="Tests\TestFramework.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Engine.h" />
@@ -173,12 +173,13 @@
     <ClInclude Include="Core\EventSystem.h" />
     <ClInclude Include="Core\InputManager.h" />
     <ClInclude Include="Core\InputEvents.h" />
+    <ClInclude Include="Core\EngineConfig.h" />
     <ClInclude Include="Core\SceneManager.h" />
     <ClInclude Include="Core\NavigationManager.h" />
     <ClInclude Include="Assets\AssetManager.h" />
     <ClInclude Include="Assets\Texture.h" />
+    <ClInclude Include="Audio\AudioManager.h" />
     <ClInclude Include="Core\SettingsManager.h" />
-    <ClInclude Include="Tests\TestFramework.h" />
     <ClInclude Include="vk_mem_alloc.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Core/EngineConfig.h"
 #include <memory>
 #include <vector>
 #include <functional>
@@ -15,32 +16,8 @@ class NavigationManager;
 class AssetManager;
 class SettingsManager;
 class ResourceManager;
-
-struct EngineConfig {
-    struct Graphics {
-        uint32_t windowWidth = 1920;
-        uint32_t windowHeight = 1080;
-        bool fullscreen = false;
-        bool vsync = true;
-        uint32_t msaaSamples = 1;
-        bool enableValidation = false;
-    } graphics;
-    
-    struct Audio {
-        float masterVolume = 1.0f;
-        float musicVolume = 0.8f;
-        float sfxVolume = 1.0f;
-        std::string audioDevice = "default";
-    } audio;
-    
-    struct Input {
-        std::unordered_map<std::string, int> keyBindings;
-        float mouseSensitivity = 1.0f;
-    } input;
-    
-    std::string assetPath = "assets/";
-    std::string configPath = "config.json";
-};
+class AudioManager;
+class InputManager;
 
 class IEngineModule {
 public:
@@ -70,6 +47,8 @@ public:
     AssetManager* GetAssetManager() const { return m_assetManager.get(); }
     SettingsManager* GetSettingsManager() const { return m_settingsManager.get(); }
     ResourceManager* GetResourceManager() const { return m_resourceManager.get(); }
+    AudioManager* GetAudioManager() const { return m_audioManager.get(); }
+    InputManager* GetInputManager() const { return m_inputManager.get(); }
     
     // Module registration
     void RegisterModule(std::unique_ptr<IEngineModule> module);
@@ -79,14 +58,14 @@ public:
     void RequestShutdown() { m_running = false; }
     
     // Configuration
-    const EngineConfig& GetConfig() const { return m_config; }
+    const EngineConfig& GetConfig() const;
 
 private:
     void InitializeModules();
+    void SetupSettingsCallbacks();
     void UpdateModules(float deltaTime);
     void ShutdownModules();
     
-    EngineConfig m_config;
     bool m_running = false;
     bool m_initialized = false;
     
@@ -99,6 +78,8 @@ private:
     std::unique_ptr<NavigationManager> m_navigationManager;
     std::unique_ptr<AssetManager> m_assetManager;
     std::unique_ptr<SettingsManager> m_settingsManager;
+    std::unique_ptr<AudioManager> m_audioManager;
+    std::unique_ptr<InputManager> m_inputManager;
     
     // Additional modules
     std::vector<std::unique_ptr<IEngineModule>> m_modules;

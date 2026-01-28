@@ -7,6 +7,8 @@
 #include "../Core/NavigationManager.h"
 #include "../Assets/AssetManager.h"
 #include "../Core/SettingsManager.h"
+#include "../Audio/AudioManager.h"
+#include "../Core/InputManager.h"
 
 #include <algorithm>
 #include <chrono>
@@ -28,11 +30,14 @@ bool Engine::Initialize(const EngineConfig& config) {
         return false;
     }
     
-    m_config = config;
-    
     try {
         // Initialize core modules in dependency order
         InitializeModules();
+        
+        // Set configuration through SettingsManager
+        if (m_settingsManager) {
+            m_settingsManager->SetConfig(config);
+        }
         
         m_initialized = true;
         m_running = true;
@@ -82,6 +87,16 @@ void Engine::Shutdown() {
     
     m_initialized = false;
     std::cout << "Engine shutdown complete" << std::endl;
+}
+
+const EngineConfig& Engine::GetConfig() const {
+    if (m_settingsManager) {
+        return m_settingsManager->GetConfig();
+    }
+    
+    // Return a static default config if SettingsManager is not available
+    static EngineConfig defaultConfig;
+    return defaultConfig;
 }
 
 void Engine::RegisterModule(std::unique_ptr<IEngineModule> module) {
@@ -146,6 +161,18 @@ void Engine::InitializeModules() {
         throw std::runtime_error("Failed to initialize NavigationManager");
     }
     
+    // 8. Audio Manager (depends on Settings)
+    m_audioManager = std::make_unique<AudioManager>(m_settingsManager.get());
+    if (!m_audioManager->Initialize()) {
+        throw std::runtime_error("Failed to initialize AudioManager");
+    }
+    
+    // 9. Input Manager (depends on Event System)
+    m_inputManager = std::make_unique<InputManager>(m_eventSystem.get());
+    if (!m_inputManager->Initialize()) {
+        throw std::runtime_error("Failed to initialize InputManager");
+    }
+    
     // Initialize additional modules in order of their initialization priority
     std::sort(m_modules.begin(), m_modules.end(), 
         [](const std::unique_ptr<IEngineModule>& a, const std::unique_ptr<IEngineModule>& b) {
@@ -157,6 +184,76 @@ void Engine::InitializeModules() {
             throw std::runtime_error(std::string("Failed to initialize module: ") + module->GetName());
         }
     }
+    
+    // Set up settings change callbacks after all modules are initialized
+    SetupSettingsCallbacks();
+}
+
+void Engine::SetupSettingsCallbacks() {
+    if (!m_settingsManager) {
+        return;
+    }
+    
+    // Register VulkanRenderer for graphics settings changes
+    if (m_renderer) {
+        m_settingsManager->RegisterChangeCallback("graphics.windowWidth", 
+            [this](const std::string& key, const SettingsManager::SettingValue& value) {
+                m_renderer->OnSettingsChanged(key);
+            });
+        
+        m_settingsManager->RegisterChangeCallback("graphics.windowHeight", 
+            [this](const std::string& key, const SettingsManager::SettingValue& value) {
+                m_renderer->OnSettingsChanged(key);
+            });
+        
+        m_settingsManager->RegisterChangeCallback("graphics.fullscreen", 
+            [this](const std::string& key, const SettingsManager::SettingValue& value) {
+                m_renderer->OnSettingsChanged(key);
+            });
+        
+        m_settingsManager->RegisterChangeCallback("graphics.vsync", 
+            [this](const std::string& key, const SettingsManager::SettingValue& value) {
+                m_renderer->OnSettingsChanged(key);
+            });
+        
+        m_settingsManager->RegisterChangeCallback("graphics.msaaSamples", 
+            [this](const std::string& key, const SettingsManager::SettingValue& value) {
+                m_renderer->OnSettingsChanged(key);
+            });
+    }
+    
+    // Register AudioManager for audio settings changes
+    if (m_audioManager) {
+        m_settingsManager->RegisterChangeCallback("audio.masterVolume", 
+            [this](const std::string& key, const SettingsManager::SettingValue& value) {
+                m_audioManager->OnSettingsChanged(key);
+            });
+        
+        m_settingsManager->RegisterChangeCallback("audio.musicVolume", 
+            [this](const std::string& key, const SettingsManager::SettingValue& value) {
+                m_audioManager->OnSettingsChanged(key);
+            });
+        
+        m_settingsManager->RegisterChangeCallback("audio.sfxVolume", 
+            [this](const std::string& key, const SettingsManager::SettingValue& value) {
+                m_audioManager->OnSettingsChanged(key);
+            });
+        
+        m_settingsManager->RegisterChangeCallback("audio.audioDevice", 
+            [this](const std::string& key, const SettingsManager::SettingValue& value) {
+                m_audioManager->OnSettingsChanged(key);
+            });
+    }
+    
+    // Register InputManager for input settings changes
+    if (m_inputManager) {
+        m_settingsManager->RegisterChangeCallback("input.mouseSensitivity", 
+            [this](const std::string& key, const SettingsManager::SettingValue& value) {
+                m_inputManager->OnSettingsChanged(key);
+            });
+    }
+    
+    std::cout << "Settings callbacks configured successfully" << std::endl;
 }
 
 void Engine::UpdateModules(float deltaTime) {
@@ -169,6 +266,8 @@ void Engine::UpdateModules(float deltaTime) {
     if (m_uiSystem) m_uiSystem->Update(deltaTime);
     if (m_sceneManager) m_sceneManager->Update(deltaTime);
     if (m_navigationManager) m_navigationManager->Update(deltaTime);
+    if (m_audioManager) m_audioManager->Update(deltaTime);
+    if (m_inputManager) m_inputManager->Update(deltaTime);
     
     // Update additional modules
     for (auto& module : m_modules) {
@@ -184,6 +283,16 @@ void Engine::ShutdownModules() {
     m_modules.clear();
     
     // Shutdown core modules in reverse dependency order
+    if (m_inputManager) {
+        m_inputManager->Shutdown();
+        m_inputManager.reset();
+    }
+    
+    if (m_audioManager) {
+        m_audioManager->Shutdown();
+        m_audioManager.reset();
+    }
+    
     if (m_navigationManager) {
         m_navigationManager->Shutdown();
         m_navigationManager.reset();

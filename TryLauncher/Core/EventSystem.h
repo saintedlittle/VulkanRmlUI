@@ -35,6 +35,8 @@ public:
     template<typename T>
     void Publish(const T& event);
     
+    void PublishEvent(std::unique_ptr<Event> event);
+    
     void ProcessEvents();
 
 private:

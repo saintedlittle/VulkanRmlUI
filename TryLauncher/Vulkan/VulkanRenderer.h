@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Engine/Engine.h"
+#include "../Core/EngineConfig.h"
 #include "VulkanDevice.h"
 #include "VulkanSwapchain.h"
 #include "VulkanCommandBuffer.h"
@@ -50,6 +51,10 @@ public:
     
     // Window resize handling
     void OnWindowResize();
+    
+    // Settings application
+    void ApplyGraphicsSettings(const EngineConfig::Graphics& graphics);
+    void OnSettingsChanged(const std::string& settingName);
 
 private:
     bool CreateCommandBuffers();
